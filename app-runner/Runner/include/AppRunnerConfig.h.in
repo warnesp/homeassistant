@@ -1,0 +1,6 @@
+#pragma once
+
+// the configured options and settings for Tutorial
+#define AppRunner_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define AppRunner_VERSION_MINOR @PROJECT_VERSION_MINOR@
+
