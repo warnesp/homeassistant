@@ -4,7 +4,7 @@ add_library(Listener STATIC
 )
 
 #needed for visual studio/xcode to list headers
-target_sources(MathLib
+target_sources(Listener
 	PRIVATE
 	"include/Listener.h"
 )

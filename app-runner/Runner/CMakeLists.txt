@@ -2,28 +2,28 @@
 # to the source code. Generate in the output location so it 
 # does not get added to source control
 configure_file (
-  "include/TutorialConfig.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/TutorialConfig.h"
+	"include/AppRunnerConfig.h.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/include/AppRunnerConfig.h"
 )
 
-add_executable(AppRunner 
+add_executable(app-runner 
 	src/AppRunner.cpp	
 )
 
 #needed for visual studio/xcode to list headers
-target_sources(AppRunner
+target_sources(app-runner
 	PRIVATE
-	"${CMAKE_CURRENT_BINARY_DIR}/include/TutorialConfig.h"
+	"${CMAKE_CURRENT_BINARY_DIR}/include/AppRunnerConfig.h"
 )
 
 #because the generated file is put in the output location, include it
-target_include_directories(AppRunner
+target_include_directories(app-runner
 	PRIVATE
 	include
 	"${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 
-target_link_libraries (AppRunner
+target_link_libraries (app-runner
 	PRIVATE
 	Listener
 )
