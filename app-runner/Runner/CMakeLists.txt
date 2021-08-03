@@ -10,6 +10,8 @@ add_executable(app-runner
 	src/AppRunner.cpp	
 )
 
+set_property(TARGET app-runner PROPERTY CXX_STANDARD 17)
+
 #needed for visual studio/xcode to list headers
 target_sources(app-runner
 	PRIVATE
