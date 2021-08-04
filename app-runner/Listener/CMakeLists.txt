@@ -16,3 +16,8 @@ target_include_directories(Listener
 	PUBLIC
 	include
 )
+
+target_link_libraries(Listener
+	PUBLIC
+	pthread
+)

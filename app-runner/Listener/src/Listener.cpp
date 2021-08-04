@@ -1,5 +1,7 @@
 #include "Listener.h"
 
+#include <chrono>
+#include <iostream>
 
 namespace kn = kissnet;
 
@@ -13,7 +15,13 @@ UdpListener::UdpListener() {
 }
 
 UdpListener::~UdpListener() {
+	stop();
+}
+
+void UdpListener::stop() {
 	running = false;
+	listen_socket.close();
+    runner.detach();
 }
 
 bool UdpListener::addListener(std::string_view key, std::function<void()> handle) {
@@ -37,9 +45,13 @@ void UdpListener::notify(std::string_view key) {
 }
 
 std::string_view UdpListener::readData(kn::buffer<255> &readBuffer) {
+
+	std::cout << "Reading data\n";
+
 	//read in data
 	auto [received_bytes, status] = listen_socket.recv(readBuffer);
-	//const auto from = listen_socket.get_recv_endpoint();
+	const auto from = listen_socket.get_recv_endpoint();
+
 
 	// make sure data is null terminated
 	if(received_bytes < readBuffer.size()) {
@@ -49,7 +61,11 @@ std::string_view UdpListener::readData(kn::buffer<255> &readBuffer) {
 	}
 
 	//convert to string
-	return std::string_view(reinterpret_cast<const char*>(readBuffer.data()));
+	auto data = std::string_view(reinterpret_cast<const char*>(readBuffer.data()));
+
+    std::cout << "Data from: " << from.address << " :: *" << data << "*\n";
+
+	return data;
 }
 
 
@@ -59,6 +75,8 @@ void UdpListener::run() {
 	//per thread buffer
 	kn::buffer<255> readBuffer;
 
+	std::cout << "Starting Thread\n";
+
 	while(running) {
 
 		//read in the next packet
@@ -67,5 +85,7 @@ void UdpListener::run() {
 		//push data to listeners
 		notify(data);
 		
+  		std::this_thread::sleep_for (std::chrono::seconds(1));
 	}
+	std::cout << "Ending Thread\n";
 }

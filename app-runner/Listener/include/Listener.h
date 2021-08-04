@@ -27,6 +27,8 @@ class UdpListener {
 		UdpListener();
 		~UdpListener();
 
+		void stop();
+
 	    ///adds a listener for the given key, returns true if added, and false otherwise
 		bool addListener(std::string_view key, std::function<void()> handle);
 
