@@ -15,11 +15,11 @@ https://github.com/Ybalrid/kissnet
 
 ### Needed packages
 
-sudo apt install git cmake build-essential
+	sudo apt install git cmake build-essential
 
 ## Build
-cmake .
-make
+	cmake .
+	make
 
 ## Home Assistant configuration
 
