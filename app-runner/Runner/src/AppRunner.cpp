@@ -4,7 +4,7 @@
 
 #include "AppRunnerConfig.h"
 
-
+#include "Config.h"
 #include "Listener.h"
 
 bool running = true;
@@ -19,33 +19,34 @@ void firefox(std::string_view site) {
 
 void quit() { running = false; }
 
-int main (int argc, char *argv[])
-{
-  if (argc >= 2)
-  {
+int main (int argc, char *argv[]) {
+	if (argc >= 2)
+	{
 
-	  std::cout << argv[0] << " Version " 
-		  << AppRunner_VERSION_MAJOR << "." << AppRunner_VERSION_MINOR 
-		  << std::endl;
-    return 1;
-  }
+		std::cout << argv[0] << " Version " 
+			<< AppRunner_VERSION_MAJOR << "." << AppRunner_VERSION_MINOR 
+			<< std::endl;
+		return 1;
+	}
 
+	// read config file for keys, command pairs
+	Config c;
+	c.parse(CONFIG_FILE_NAME);
 
-  //TODO read config file for keys, command pairs
-  
-  //setup UdpListener
-  UdpListener listener;
+	// setup UdpListener
+	UdpListener listener;
 
-  //TODO handle notifications
-  listener.addListener("foo", std::bind(firefox, "www.netflix.com"));
-  listener.addListener("bar", std::bind(firefox, "www.crunchyroll.com"));
-  listener.addListener("quit", quit);
+	// handle notifications
+	listener.addListener("quit", quit);
 
-  // wait to quit
-  while(running) {
-	std::this_thread::sleep_for (std::chrono::seconds(2));
-  }
+	for(auto& [key, value] : c.getCommands()) {
+		listener.addListener(key, std::bind(firefox, value));
+	}
 
+	// wait to quit
+	while(running) {
+		std::this_thread::sleep_for (std::chrono::seconds(2));
+	}
 
-  return 0;
+	return 0;
 }

@@ -85,7 +85,7 @@ void UdpListener::run() {
 		//push data to listeners
 		notify(data);
 		
-  		std::this_thread::sleep_for (std::chrono::seconds(1));
+  		std::this_thread::sleep_for (std::chrono::seconds(2));
 	}
 	std::cout << "Ending Thread\n";
 }

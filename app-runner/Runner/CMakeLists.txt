@@ -12,12 +12,6 @@ add_executable(app-runner
 
 set_property(TARGET app-runner PROPERTY CXX_STANDARD 17)
 
-#needed for visual studio/xcode to list headers
-target_sources(app-runner
-	PRIVATE
-	"${CMAKE_CURRENT_BINARY_DIR}/include/AppRunnerConfig.h"
-)
-
 #because the generated file is put in the output location, include it
 target_include_directories(app-runner
 	PRIVATE
@@ -27,5 +21,6 @@ target_include_directories(app-runner
 
 target_link_libraries (app-runner
 	PRIVATE
+	Config
 	Listener
 )

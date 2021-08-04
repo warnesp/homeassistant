@@ -5,12 +5,6 @@ add_library(Listener STATIC
 
 set_property(TARGET Listener PROPERTY CXX_STANDARD 17)
 
-#needed for visual studio/xcode to list headers
-target_sources(Listener
-	PRIVATE
-	"include/Listener.h"
-)
-
 #setup the include directories
 target_include_directories(Listener
 	PUBLIC
