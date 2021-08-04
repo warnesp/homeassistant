@@ -13,6 +13,13 @@ https://github.com/nlohmann/json
 ### Network
 https://github.com/Ybalrid/kissnet
 
+### Needed packages
+
+sudo apt install git cmake build-essential
+
+## Build
+cmake .
+make
 
 ## Home Assistant configuration
 
