@@ -1,5 +1,8 @@
 {
 	 "commands": {
+		"youtube": "https://www.youtube.com/",
+		"youtubekids": "https://www.youtubekids.com/",
+		"hulu": "https://www.hulu.com/",
 		"disney": "https://www.disneyplus.com/",
 		"netflix": "www.netflix.com",
 		"amazon": "https://www.amazon.com/gp/video/mystuff/library/ref=atv_mstff_yvl_tab",
