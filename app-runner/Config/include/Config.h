@@ -10,7 +10,7 @@ class Config {
 
 	public:
 
-		std::map<std::string_view, std::string_view> getCommands();
+		std::map<std::string_view, std::string> getCommands();
 
 		void parse(std::string fileName);
 };
