@@ -29,5 +29,9 @@ Here is an example configuration in the home assistant configuration file.
 
 Create Scripts that run each shell\_command. Alexa will show the scripts as Scenes in the Alexa app. You can run the script by saying "Alexa Run \<\<script name\>\>".
 
+## Installation
 
+	mkdir -p $HOME/.local/share/systemd/user
+	cp apprunner.service $HOME/.local/share/systemd/user/apprunner.service
+	systemctl --user enable apprunner.service
 

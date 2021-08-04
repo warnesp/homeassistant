@@ -1,0 +1,10 @@
+[Unit]
+Description=AppRunner Service
+[Service]
+Type=simple
+TimeoutStartSec=0
+Environment="DISPLAY=:0"
+WorkingDirectory=/home/pwarnes/services
+ExecStart=/home/pwarnes/services/app-runner.sh
+[Install]
+WantedBy=default.target
