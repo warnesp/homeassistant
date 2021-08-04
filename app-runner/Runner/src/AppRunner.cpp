@@ -7,6 +7,8 @@
 #include "Config.h"
 #include "Listener.h"
 
+constexpr std::chrono::seconds WAIT_TIME(2);
+
 bool running = true;
 
 //launches firefox with the given site
@@ -18,8 +20,22 @@ void firefox(std::string_view site) {
 	system(base.c_str());
 }
 
-
 void quit() { running = false; }
+
+void setupListeners(UdpListener& listener, Config const &  config) {
+	listener.addListener("quit", quit);
+
+	for(auto const & [key, value] : config.getCommands()) {
+		std::cout << "Adding " << key << " " << value << "\n";
+		listener.addListener(key, std::bind(firefox, value));
+	}
+}
+
+void waitToQuit() {
+	while(running) {
+		std::this_thread::sleep_for(WAIT_TIME);
+	}
+}
 
 int main (int argc, char *argv[]) {
 	if (argc >= 2) {
@@ -30,24 +46,15 @@ int main (int argc, char *argv[]) {
 	}
 
 	// read config file for keys, command pairs
-	Config c;
-	c.parse(CONFIG_FILE_NAME);
+	Config config;
+	config.parse(CONFIG_FILE_NAME);
 
 	// setup UdpListener
 	UdpListener listener;
 
-	// handle notifications
-	listener.addListener("quit", quit);
+	setupListeners(listener, config);
 
-	for(auto& [key, value] : c.getCommands()) {
-		std::cout << "Adding " << key << " " << value << "\n";
-		listener.addListener(key, std::bind(firefox, value));
-	}
-
-	// wait to quit
-	while(running) {
-		std::this_thread::sleep_for (std::chrono::seconds(2));
-	}
+	waitToQuit();
 
 	return 0;
 }

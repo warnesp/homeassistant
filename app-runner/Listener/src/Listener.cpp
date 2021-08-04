@@ -3,7 +3,12 @@
 #include <chrono>
 #include <iostream>
 
+
+#define LOCK std::lock_guard<std::mutex> guard(listeners_lock)
+
 namespace kn = kissnet;
+
+constexpr std::chrono::seconds SLEEP_TIME(2);
 
 UdpListener::UdpListener() {
 
@@ -11,6 +16,7 @@ UdpListener::UdpListener() {
 	listen_socket = kn::udp_socket(kn::endpoint("0.0.0.0", 5577));
 	listen_socket.bind();
 
+	//Kick off the listener thread
     runner = std::thread(&UdpListener::run,this);
 }
 
@@ -24,41 +30,34 @@ void UdpListener::stop() {
     runner.detach();
 }
 
-bool UdpListener::addListener(std::string_view key, std::function<void()> handle) {
-	std::lock_guard<std::mutex> guard(listeners_lock);
+bool UdpListener::addListener(std::string_view key, Callback handle) {
+	LOCK;
 	return listeners.emplace(key, handle).second;
 }
 
 void UdpListener::removeListener(std::string_view key) {
-	std::lock_guard<std::mutex> guard(listeners_lock);
+	LOCK;
 	listeners.erase(key);
 }
 
 
 void UdpListener::notify(std::string_view key) {
-	std::lock_guard<std::mutex> guard(listeners_lock);
+	LOCK;
 	auto listener = listeners.find(key);
 	if(listener != listeners.end()) {
 		listener->second();
 	}
-
 }
 
 std::string_view UdpListener::readData(kn::buffer<255> &readBuffer) {
-
-	std::cout << "Reading data\n";
 
 	//read in data
 	auto [received_bytes, status] = listen_socket.recv(readBuffer);
 	const auto from = listen_socket.get_recv_endpoint();
 
-
 	// make sure data is null terminated
-	if(received_bytes < readBuffer.size()) {
-		readBuffer[received_bytes] = std::byte { '\0' };
-	} else { 
-		readBuffer[readBuffer.size() - 1] = std::byte { '\0' };
-	}
+	auto lastByte = received_bytes < readBuffer.size() ? received_bytes : (readBuffer.size() - 1);
+	readBuffer[lastByte] = std::byte { '\0' };
 
 	//convert to string
 	auto data = std::string_view(reinterpret_cast<const char*>(readBuffer.data()));
@@ -75,8 +74,7 @@ void UdpListener::run() {
 	//per thread buffer
 	kn::buffer<255> readBuffer;
 
-	std::cout << "Starting Thread\n";
-
+	// run until stop is called
 	while(running) {
 
 		//read in the next packet
@@ -85,7 +83,6 @@ void UdpListener::run() {
 		//push data to listeners
 		notify(data);
 		
-  		std::this_thread::sleep_for (std::chrono::seconds(2));
+  		std::this_thread::sleep_for(SLEEP_TIME);
 	}
-	std::cout << "Ending Thread\n";
 }
