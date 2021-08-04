@@ -1,5 +1,5 @@
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 #include "AppRunnerConfig.h"
@@ -11,6 +11,8 @@ bool running = true;
 
 //launches firefox with the given site
 void firefox(std::string_view site) {
+	std::cout << "Opening site " << site << " in firefox\n";
+
 	std::string base = "firefox \"";
 	base.append(site).append("\"");
 	system(base.c_str());
@@ -40,6 +42,7 @@ int main (int argc, char *argv[]) {
 	listener.addListener("quit", quit);
 
 	for(auto& [key, value] : c.getCommands()) {
+		std::cout << "Adding " << key << " " << value << "\n";
 		listener.addListener(key, std::bind(firefox, value));
 	}
 

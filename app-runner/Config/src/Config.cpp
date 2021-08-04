@@ -8,11 +8,12 @@ using namespace std;
 using json = nlohmann::json;
 
 
-map<string_view, string_view> Config::getCommands() {
-	map<string_view, string_view> results;
+map<string_view, string> Config::getCommands() {
+	map<string_view, string> results;
 
 	for(auto& [key, value] : data["commands"].items()) {
-		results.emplace(key, value.get<std::string>());
+		cout << key << " " << value.get<string>() << endl;
+		results.emplace(key, value.get<string>());
 	}
 
 	return results;
@@ -20,7 +21,7 @@ map<string_view, string_view> Config::getCommands() {
 
 void Config::parse(string fileName) {
 	// read a JSON file
-	std::ifstream in(fileName.c_str());	
+	ifstream in(fileName.c_str());	
 
 	in >> data;
 }
