@@ -8,6 +8,7 @@ configure_file (
 
 add_executable(app-runner 
     src/AppRunner.cpp   
+    src/Commands.cpp
 )
 
 set_property(TARGET app-runner PROPERTY CXX_STANDARD 17)

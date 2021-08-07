@@ -3,22 +3,26 @@
 
 #include "json.hpp"
 
-using Commands = std::map<std::string, std::string>;
+namespace Config {
+    using Commands = std::map<std::string, std::string>;
 
-class Config {
+    class JsonConfig {
 
-    nlohmann::json data;
+        nlohmann::json data;
 
-    static constexpr auto DefaultBrowser = "firefox";
-    static constexpr auto DefaultPort = 5577;
-    static constexpr auto DefaultSender = "0.0.0.0";
+        static constexpr auto DefaultAllowShutdown = false;
+        static constexpr auto DefaultBrowser = "firefox";
+        static constexpr auto DefaultPort = 5577;
+        static constexpr auto DefaultSender = "0.0.0.0";
 
-    public:
+        public:
+        bool getAllowShutdown() const;
         std::string getBrowser() const;
         Commands getCommands() const;
         int getPort() const;
         std::string getSender() const;
 
+        bool doesAllowShutdownExists() const noexcept;
         bool doesBrowserExists() const noexcept;
         bool doesCommandsExists() const noexcept;
         bool doesPortExists() const noexcept;
@@ -26,5 +30,5 @@ class Config {
 
 
         void parse(std::string const & fileName);
-};
-
+    };
+}

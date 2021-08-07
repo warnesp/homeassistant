@@ -1,13 +1,16 @@
 {
-	 "commands": {
-		"youtube": "https://www.youtube.com/",
-		"youtubekids": "https://www.youtubekids.com/",
-		"hulu": "https://www.hulu.com/",
-		"disney": "https://www.disneyplus.com/",
-		"netflix": "www.netflix.com",
-		"amazon": "https://www.amazon.com/gp/video/mystuff/library/ref=atv_mstff_yvl_tab",
-		"crunchyroll": "www.crunchyroll.com"
-	}
+    "allowShutdown": false,
+    "browser": "firefox",
+    "sender": "10.0.0.40",
+    "commands": {
+        "youtube": "https://www.youtube.com/",
+        "youtubekids": "https://www.youtubekids.com/",
+        "hulu": "https://www.hulu.com/",
+        "disney": "https://www.disneyplus.com/",
+        "netflix": "www.netflix.com",
+        "amazon": "https://www.amazon.com/gp/video/mystuff/library/ref=atv_mstff_yvl_tab",
+        "crunchyroll": "www.crunchyroll.com"
+    }
 
 }
 
