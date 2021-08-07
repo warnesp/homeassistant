@@ -19,16 +19,25 @@ type JsonConfig::get##name () const {\
 
 namespace Config {
 
+    void JsonConfig::parse(std::string const & fileName) {
+        // read a JSON file
+        std::ifstream in(fileName.c_str()); 
+
+        in >> data;
+    }
+
     DEFAULT_GETTER(bool, AllowShutdown)
     DEFAULT_GETTER(std::string, Browser)
     DEFAULT_GETTER(int, Port)
     DEFAULT_GETTER(std::string, Sender)
 
-    Commands JsonConfig::getCommands() const {
+    DEFAULT_EXISTS(SiteCommands)
+
+    Commands JsonConfig::getSiteCommands() const {
         Commands results;
 
-        if(doesCommandsExists()) {
-            for(auto& [key, value] : data[KeyCommands].items()) {
+        if(doesSiteCommandsExists()) {
+            for(auto& [key, value] : data[KeySiteCommands].items()) {
                 results.emplace(key, value.get<std::string>());
             }
         }
@@ -36,12 +45,4 @@ namespace Config {
         return results;
     }
 
-    DEFAULT_EXISTS(Commands)
-
-        void JsonConfig::parse(std::string const & fileName) {
-            // read a JSON file
-            std::ifstream in(fileName.c_str()); 
-
-            in >> data;
-        }
 }

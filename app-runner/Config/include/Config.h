@@ -16,19 +16,19 @@ namespace Config {
         static constexpr auto DefaultSender = "0.0.0.0";
 
         public:
+        void parse(std::string const & fileName);
+
         bool getAllowShutdown() const;
         std::string getBrowser() const;
-        Commands getCommands() const;
+        Commands getSiteCommands() const;
         int getPort() const;
         std::string getSender() const;
 
         bool doesAllowShutdownExists() const noexcept;
         bool doesBrowserExists() const noexcept;
-        bool doesCommandsExists() const noexcept;
+        bool doesSiteCommandsExists() const noexcept;
         bool doesPortExists() const noexcept;
         bool doesSenderExists() const noexcept;
 
-
-        void parse(std::string const & fileName);
     };
 }

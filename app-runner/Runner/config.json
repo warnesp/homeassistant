@@ -2,7 +2,7 @@
     "allowShutdown": false,
     "browser": "firefox",
     "sender": "10.0.0.40",
-    "commands": {
+    "site-commands": {
         "youtube": "https://www.youtube.com/",
         "youtubekids": "https://www.youtubekids.com/",
         "hulu": "https://www.hulu.com/",

@@ -7,27 +7,30 @@
 #include "Config.h"
 #include "Listener.h"
 
+void setupListener(UdpListener& listener, Config::JsonConfig const &  config) {
+    // basic listener setup
+    listener.setPort(config.getPort());
+    if(config.doesSenderExists()) {
+        listener.setFilter(config.getSender());
+    }
 
-constexpr auto QuitKey = "quit";
-constexpr auto ShutdownKey = "shutdown";
-
-void setupListeners(UdpListener& listener, Config::JsonConfig const &  config) {
     // add built in listeners
-    listener.addListener(QuitKey, Commands::quit);
+    listener.addListener(Commands::QuitKey, Commands::quit);
 
     if(config.getAllowShutdown()) {
-        listener.addListener(ShutdownKey, Commands::shutdownComputer);
+        listener.addListener(Commands::ShutdownKey, Commands::shutdownComputer);
     }
 
     // add commands from file
-    for(auto const & [key, value] : config.getCommands()) {
+    for(auto const & [key, value] : config.getSiteCommands()) {
         std::cout << "Adding " << key << " " << value << "\n";
         listener.addListener(key, std::bind(Commands::runInBrowser, config.getBrowser(), value));
     }
 }
 
 int main (int argc, char *argv[]) {
-    if (argc >= 2) {
+    // print out the version info if any extra parameters are given
+    if (argc >= 2 && argv[1] == "-v") {
         std::cout << argv[0] << " Version " 
             << AppRunner_VERSION_MAJOR << "." << AppRunner_VERSION_MINOR 
             << std::endl;
@@ -40,15 +43,10 @@ int main (int argc, char *argv[]) {
 
     // setup UdpListener
     UdpListener listener;
-    listener.setPort(config.getPort());
-    if(config.doesSenderExists()) {
-        listener.setFilter(config.getSender());
-    }
+    setupListener(listener, config);
 
+    // start the listener
     listener.start();
-
-    // wire up config settings to the listener
-    setupListeners(listener, config);
 
     // keep running until quit is signaled
     Commands::waitToQuit();
