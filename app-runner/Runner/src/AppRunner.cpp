@@ -20,10 +20,13 @@ void firefox(std::string_view site) {
 	system(base.c_str());
 }
 
+void shutdownComputer() { system("systemctl poweroff"); }
+
 void quit() { running = false; }
 
 void setupListeners(UdpListener& listener, Config const &  config) {
 	listener.addListener("quit", quit);
+	listener.addListener("shutdown", shutdownComputer);
 
 	for(auto const & [key, value] : config.getCommands()) {
 		std::cout << "Adding " << key << " " << value << "\n";
@@ -51,6 +54,11 @@ int main (int argc, char *argv[]) {
 
 	// setup UdpListener
 	UdpListener listener;
+	listener.setPort(config.getPort());
+	if(config.doesSenderExists()) {
+		listener.setFilter(config.getSender());
+	}
+	listener.start();
 
 	setupListeners(listener, config);
 

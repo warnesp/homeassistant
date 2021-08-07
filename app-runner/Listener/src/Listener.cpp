@@ -3,25 +3,24 @@
 #include <chrono>
 #include <iostream>
 
-
 #define LOCK std::lock_guard<std::mutex> guard(listeners_lock)
 
 namespace kn = kissnet;
 
 constexpr std::chrono::seconds SLEEP_TIME(2);
 
-UdpListener::UdpListener() {
+UdpListener::~UdpListener() {
+	stop();
+}
 
+void UdpListener::start() {
 	//Socket used to receive, the "endpoint" is where to listen to data
-	listen_socket = kn::udp_socket(kn::endpoint("0.0.0.0", 5577));
+	listen_socket = kn::udp_socket(kn::endpoint("0.0.0.0", port));
 	listen_socket.bind();
 
 	//Kick off the listener thread
     runner = std::thread(&UdpListener::run,this);
-}
 
-UdpListener::~UdpListener() {
-	stop();
 }
 
 void UdpListener::stop() {
@@ -40,6 +39,13 @@ void UdpListener::removeListener(std::string_view key) {
 	listeners.erase(key);
 }
 
+void UdpListener::setFilter(std::string_view ip) noexcept {
+	filterIp = ip;
+}
+
+void UdpListener::setPort(int port) noexcept {
+	this->port = port;
+}
 
 void UdpListener::notify(std::string_view key) {
 	LOCK;
@@ -49,22 +55,23 @@ void UdpListener::notify(std::string_view key) {
 	}
 }
 
-std::string_view UdpListener::readData(kn::buffer<255> &readBuffer) {
+template<std::size_t T>
+std::string UdpListener::readData(kn::buffer<T> &readBuffer) {
+
+    constexpr auto endOfBuffer = T - 1;
+	constexpr auto nullByte = std::byte { '\0' };
+
+	//clear out any previous data
+	readBuffer.fill(nullByte);
 
 	//read in data
 	auto [received_bytes, status] = listen_socket.recv(readBuffer);
 	const auto from = listen_socket.get_recv_endpoint();
 
 	// make sure data is null terminated
-	auto lastByte = received_bytes < readBuffer.size() ? received_bytes : (readBuffer.size() - 1);
-	readBuffer[lastByte] = std::byte { '\0' };
+	readBuffer[endOfBuffer] = nullByte;
 
-	//convert to string
-	auto data = std::string_view(reinterpret_cast<const char*>(readBuffer.data()));
-
-    std::cout << "Data from: " << from.address << " :: *" << data << "*\n";
-
-	return data;
+	return from.address;
 }
 
 
@@ -74,15 +81,25 @@ void UdpListener::run() {
 	//per thread buffer
 	kn::buffer<255> readBuffer;
 
+	const bool allowAll = filterIp == ANY_IP;
+
 	// run until stop is called
 	while(running) {
 
 		//read in the next packet
-		auto data = readData(readBuffer);
+		auto from = readData(readBuffer);
 
-		//push data to listeners
-		notify(data);
-		
+		//filter data based on IP
+		if(allowAll || filterIp == from) {
+			//convert to string
+			auto data = std::string_view(reinterpret_cast<const char*>(readBuffer.data()));
+
+			std::cout << "Data from: " << from << " :: *" << data << "*\n";
+
+			//push data to listeners
+			notify(data);
+		}
+
   		std::this_thread::sleep_for(SLEEP_TIME);
 	}
 }

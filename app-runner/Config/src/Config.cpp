@@ -4,28 +4,40 @@
 
 #include "JsonKeys.h"
 
-using namespace std;
 using json = nlohmann::json;
 
-string Config::getBrowser() const {
-	return data.contains(KEY_BROWSER) 
-		? data[KEY_BROWSER].get<string>() 
-		: DEFAULT_BROWSER;
+#define DEFAULT_EXISTS(name)\
+bool Config::does##name##Exists () const noexcept {\
+	return data.contains(Key##name);\
 }
 
-map<string, string> Config::getCommands() const {
-	map<string, string> results;
+#define DEFAULT_GETTER(type, name)\
+DEFAULT_EXISTS(name)\
+type Config::get##name () const {\
+	return does##name##Exists () ? data[Key##name].get<type>() : Default##name ;\
+}
 
-	for(auto& [key, value] : data[KEY_COMMANDS].items()) {
-		results.emplace(key, value.get<string>());
+DEFAULT_GETTER(std::string, Browser)
+DEFAULT_GETTER(int, Port)
+DEFAULT_GETTER(std::string, Sender)
+
+Commands Config::getCommands() const {
+	Commands results;
+
+	if(doesCommandsExists()) {
+		for(auto& [key, value] : data[KeyCommands].items()) {
+			results.emplace(key, value.get<std::string>());
+		}
 	}
 
 	return results;
 }
 
-void Config::parse(string fileName) {
+DEFAULT_EXISTS(Commands)
+
+void Config::parse(std::string const & fileName) {
 	// read a JSON file
-	ifstream in(fileName.c_str());	
+	std::ifstream in(fileName.c_str());	
 
 	in >> data;
 }

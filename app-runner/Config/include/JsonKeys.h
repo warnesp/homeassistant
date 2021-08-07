@@ -1,6 +1,4 @@
-
-constexpr char const * DEFAULT_BROWSER = "firefox";
-
-constexpr char const * KEY_BROWSER = "browser";
-constexpr char const * KEY_COMMANDS = "commands";
-
+constexpr auto KeyBrowser = "browser";
+constexpr auto KeyCommands = "commands";
+constexpr auto KeyPort = "port";
+constexpr auto KeySender = "sender";

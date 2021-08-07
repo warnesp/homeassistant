@@ -19,13 +19,22 @@ class UdpListener {
 
 	bool running = true;
 
+	std::string filterIp;
+	int port = 5577;
+
 	public:
 
-		UdpListener();
+		static constexpr std::string_view ANY_IP = "0.0.0.0";
+		static constexpr std::string_view EMPTY_DATA = "";
+
+		UdpListener() = default;
 		~UdpListener();
 
 		UdpListener(const UdpListener&) = delete;
 		UdpListener& operator=(const UdpListener&) = delete;
+
+		///starts the listening thread
+		void start();
 
 		///lets the thread know it should exit
 		void stop();
@@ -36,11 +45,14 @@ class UdpListener {
 		///removes a listener for the given key
 		void removeListener(std::string_view key);
 
+		void setFilter(std::string_view ip) noexcept;
+		void setPort(int port) noexcept;
 
 	private:
 
 		void notify(std::string_view key);
-		std::string_view readData(kissnet::buffer<255> &readBuffer);
+		template<std::size_t T>
+		std::string readData(kissnet::buffer<T> &readBuffer);
 		void run();
 };
 
