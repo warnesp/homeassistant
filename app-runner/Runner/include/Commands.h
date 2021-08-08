@@ -1,13 +1,16 @@
+#include <array>
 #include <string>
+#include <string_view>
 
 namespace Commands {
 
     constexpr auto QuitKey = "quit";
     constexpr auto ShutdownKey = "shutdown";
 
+    enum Browsers { FIREFOX, CHROME, CHROMIUM };
 
     // launches browser with the given site
-    void runInBrowser(std::string_view browser, std::string_view site); 
+    void runInBrowser(Browsers browser, std::string_view site); 
 
     /// shutsdown the computer
     void shutdownComputer();
@@ -17,4 +20,7 @@ namespace Commands {
 
     /// used to wait in a loop until quit is called
     void waitToQuit();
+
+
+    Browsers stringToBrowser(std::string_view str);
 }

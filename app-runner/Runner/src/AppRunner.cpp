@@ -21,10 +21,12 @@ void setupListener(UdpListener& listener, Config::JsonConfig const &  config) {
         listener.addListener(Commands::ShutdownKey, Commands::shutdownComputer);
     }
 
+    Commands::Browsers browser = Commands::stringToBrowser(config.getBrowser());
+
     // add commands from file
     for(auto const & [key, value] : config.getSiteCommands()) {
         std::cout << "Adding " << key << " " << value << "\n";
-        listener.addListener(key, std::bind(Commands::runInBrowser, config.getBrowser(), value));
+        listener.addListener(key, std::bind(Commands::runInBrowser, browser, value));
     }
 }
 
