@@ -8,6 +8,7 @@
 
 using Callback = std::function<void()>;
 
+/// Listens on a udp socket (non-blocking) and calls a handler based on the data received.
 class UdpListener {
     
     kissnet::udp_socket listen_socket;
