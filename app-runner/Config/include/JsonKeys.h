@@ -1,3 +1,5 @@
+#pragma once
+
 constexpr auto KeyAllowShutdown = "allowShutdown";
 constexpr auto KeyBrowser = "browser";
 constexpr auto KeySiteCommands = "site-commands";
