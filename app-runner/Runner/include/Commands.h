@@ -9,7 +9,7 @@ namespace Commands {
     constexpr auto QuitKey = "quit";
     constexpr auto ShutdownKey = "shutdown";
 
-    enum Browsers { FIREFOX, CHROME, CHROMIUM };
+    enum class Browsers { FIREFOX, CHROME, CHROMIUM };
 
     // launches browser with the given site
     void runInBrowser(Browsers browser, std::string_view site); 
@@ -25,4 +25,5 @@ namespace Commands {
 
 
     Browsers stringToBrowser(std::string_view str);
+    std::string_view browserToString(Browsers b);
 }
