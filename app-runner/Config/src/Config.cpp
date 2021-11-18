@@ -6,17 +6,6 @@
 
 using json = nlohmann::json;
 
-#define DEFAULT_EXISTS(name)\
-bool JsonConfig::does##name##Exists () const noexcept {\
-    return data.contains(Key##name);\
-}
-
-#define DEFAULT_GETTER(type, name)\
-DEFAULT_EXISTS(name)\
-type JsonConfig::get##name () const {\
-    return does##name##Exists () ? data[Key##name].get<type>() : Default##name ;\
-}
-
 namespace Config {
 
     void JsonConfig::parse(std::string const & fileName) {
@@ -26,12 +15,41 @@ namespace Config {
         in >> data;
     }
 
-    DEFAULT_GETTER(bool, AllowShutdown)
-    DEFAULT_GETTER(std::string, Browser)
-    DEFAULT_GETTER(int, Port)
-    DEFAULT_GETTER(std::string, Sender)
+    bool JsonConfig::doesAllowShutdownExists() const noexcept {
+        return data.contains(KeyAllowShutdown);
+    }
 
-    DEFAULT_EXISTS(SiteCommands)
+    bool JsonConfig::getAllowShutdown() const {
+        return doesAllowShutdownExists() ? data[KeyAllowShutdown].get<bool>() : DefaultAllowShutdown;
+    }
+
+    bool JsonConfig::doesBrowserExists() const noexcept {
+        return data.contains(KeyBrowser);
+    }
+
+    std::string JsonConfig::getBrowser() const {
+        return doesBrowserExists() ? data[KeyBrowser].get<std::string>() : DefaultBrowser;
+    }
+
+    bool JsonConfig::doesPortExists() const noexcept {
+        return data.contains(KeyPort);
+    }
+
+    int JsonConfig::getPort() const {
+        return doesPortExists() ? data[KeyPort].get<int>() : DefaultPort;
+    }
+
+    bool JsonConfig::doesSenderExists() const noexcept {
+        return data.contains(KeySender);
+    }
+
+    std::string JsonConfig::getSender() const {
+        return doesSenderExists() ? data[KeySender].get<std::string>() : DefaultSender;
+    }
+
+    bool JsonConfig::doesSiteCommandsExists() const noexcept {
+        return data.contains(KeySiteCommands);
+    }
 
     Commands JsonConfig::getSiteCommands() const {
         Commands results;
