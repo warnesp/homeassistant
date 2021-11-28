@@ -18,7 +18,7 @@ namespace Config {
         static constexpr auto DefaultSender = "0.0.0.0";
 
         public:
-        bool parse(std::string const & fileName);
+        bool parse(std::string const & fileName) noexcept;
 
         bool getAllowShutdown() const;
         std::string getBrowser() const;

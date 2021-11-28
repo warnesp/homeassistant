@@ -8,13 +8,14 @@ using json = nlohmann::json;
 
 namespace Config {
 
-    bool JsonConfig::parse(std::string const & fileName) {
-        // read a JSON file
-        std::ifstream in(fileName.c_str()); 
-
+    bool JsonConfig::parse(std::string const & fileName) noexcept {
         try { 
+          // read a JSON file
+          std::ifstream in(fileName.c_str()); 
             in >> data;
         } catch ( nlohmann::detail::parse_error ) {
+            return false;
+        } catch ( std::exception& e ){
             return false;
         }
 
