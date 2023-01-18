@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/local/bin/app-runner /etc/sv/apprunner/config.json

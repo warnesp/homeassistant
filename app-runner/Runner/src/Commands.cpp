@@ -27,8 +27,8 @@ namespace Commands {
         system(base.c_str());
     }
 
-    void shutdownComputer() { 
-        system("systemctl poweroff"); 
+    void shutdownComputer() {
+        system("shutdown -h now");
         quit();
     }
 
