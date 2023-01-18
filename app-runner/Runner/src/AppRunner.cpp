@@ -1,8 +1,7 @@
 #include <iostream>
 #include <thread>
 
-#include "AppRunnerConfig.h"
-
+#include "Arguments.h"
 #include "Commands.h"
 #include "Config.h"
 #include "Listener.h"
@@ -30,28 +29,15 @@ void setupListener(UdpListener& listener, Config::JsonConfig const &  config) {
     }
 }
 
-// Returns if execution should continue
-bool handleArgs(int argc, char *argv[]) {
-    // print out the version info if any extra parameters are given
-    if (argc >= 2 && std::string(argv[1]) == std::string("-v")) {
-        std::cout << argv[0] << " Version " 
-            << AppRunner_VERSION_MAJOR << "." << AppRunner_VERSION_MINOR 
-            << std::endl;
-        return false;
-    }
-
-    return true;
-}
 
 int main (int argc, char *argv[]) {
-    
-    if(!handleArgs(argc, argv)) {
-        return 0;
-    }
+    runner::Arguments args(argc, argv);
+
+    if(!args.run) { return 0; }
 
     // read config file for keys, command pairs
     Config::JsonConfig config;
-    if(config.parse(CONFIG_FILE_NAME)) {
+    if(config.parse(args.configFilePath)) {
 
         // setup UdpListener
         UdpListener listener;
@@ -63,7 +49,7 @@ int main (int argc, char *argv[]) {
         // keep running until quit is signaled
         Commands::waitToQuit();
     } else {
-        std::cout << "Could not read config file: " << CONFIG_FILE_NAME << "\n";
+        std::cout << "Could not read config file: " << args.configFilePath << "\n";
     }
 
     return 0;

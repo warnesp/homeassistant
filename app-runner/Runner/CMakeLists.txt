@@ -8,6 +8,7 @@ configure_file (
 
 add_executable(app-runner 
     src/AppRunner.cpp   
+    src/Arguments.cpp   
     src/Commands.cpp
 )
 
